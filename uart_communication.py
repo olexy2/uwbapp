@@ -7,27 +7,22 @@ def create_serial_connection(port, baudrate):
 def stop_shell_cmd(ser):
     stop = b'\r'
     ser.write(stop)
-    data = ser.readline(50)
     time.sleep(0.5)
-
-    print("Received bytes:", data)
-    print("Received HEX:", data.hex())
-    print("Decoded:", data.decode())
 
 def access_uart(ser):
     enter = b'\r'
-    time.sleep(1)
+    time.sleep(0.1)
     ser.write(enter)
     time.sleep(0.1)
     ser.write(enter)
     time.sleep(1)
-    print('uart accessed')
 
 def an_mode(ser):
     ser.write(b'nma\r')
-
+    time.sleep(0.9)
 def tag_moge(ser):
     ser.write(b'nmt\r')
+    time.sleep(0.9)
 
 def set_panid(ser, panid):
     panid_str = str(panid).strip()
@@ -55,18 +50,18 @@ def anchors_list(ser):
     time.sleep(0.5)
 
     response = ser.read_all().decode(errors='ignore')
-    print(response)
 
     lines = response.strip().splitlines()[-6:]
     return '\n'.join(lines)
 
 def reboot(ser):
     ser.write(b'reset\n')
+    time.sleep(0.9)
 
 def get_mode(ser):
     ser.write(b'nmg\r')
     time.sleep(0.2)
-    data = ser.readline(50)
+    data = ser.read_all().decode(errors='ignore')
     time.sleep(0.1)
     return data
 

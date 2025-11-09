@@ -14,7 +14,7 @@ if __name__ == "__main__":
     main_window.position_changed.connect(chart_window.set_point)
 
     main_window.show()
-    chart_window.show()
+    #chart_window.show()
 
     sys.exit(app.exec())
 
