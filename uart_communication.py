@@ -84,6 +84,20 @@ def set_2d_xy(ser, x, y):
     time.sleep(0.1)
     ser.write(b'0\r')
 
+def set_3d_xyz(ser, x, y, z):
+    x_str = str(x).strip()
+    y_str = str(y).strip()
+    z_str = str(z).strip()
+    ser.write(b'aps ')
+    time.sleep(0.1)
+    ser.write(x_str.encode('utf-8') + b' ')
+    time.sleep(0.1)
+    ser.write(y_str.encode('utf-8') + b' ')
+    time.sleep(0.1)
+    ser.write(z_str.encode('utf-8') + b' ')
+    time.sleep(0.1)
+    ser.write(b'0\r')
+
 def get_sys_info(ser):
     access_uart(ser)
     ser.write(b'si\r')

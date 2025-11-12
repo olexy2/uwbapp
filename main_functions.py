@@ -33,7 +33,7 @@ class Buttons_func:
     def update_pos_2d(self):
         pos = uart.les_read(self.main.ser)
         if pos:
-            match = re.search(r"est\[(-?\d+\.\d+),(-?\d+\.\d+)", pos)
+            match = re.search(r'est\[(-?\d+\.\d+),(-?\d+\.\d+)', pos)
             if match:
                 x, y = map(float, match.groups())
                 self.main._2d_pos_line.setText(f"X = {x}, Y = {y}")
@@ -53,6 +53,31 @@ class Buttons_func:
         x = self.main.x_2d_line.text()
         y = self.main.y_2d_line.text()
         uart.set_2d_xy(self.main.ser, x, y)
+
+    def update_pos_3d(self):
+        pos = uart.les_read(self.main.ser)
+        if pos:
+            match = re.search(r'est\[(-?\d+\.\d+),(-?\d+\.\d+),(-?\d+\.\d+)', pos)
+            if match:
+                x,y,z= map(float, match.groups())
+                self.main._3d_pos_line.setText(f'X = {x}, Y = {y}, Z = {z}')
+                self.main.x_pos, self.main.y_pos, self.main.z_pos = x, y, z
+                self.main.position_changed.emit(x,y,z)
+
+    def start_measure_3d(self):
+        uart.les_start(self.main.ser)
+        self.main.timer.timeout.disconnect()
+        self.main.timer.timeout.connect(self.update_pos_3d)
+        self.main.timer.start()
+        self.update_pos_3d()
+        self.main._3d_pos_btn_start.setEnabled(False)
+        self.main._3d_pos_btn_stop.setEnabled(True)
+
+    def set_3d_xyz(self):
+        x = self.main.x_3d_line.text()
+        y = self.main.y_3d_line.text()
+        z = self.main.z_3d_line.text()
+        uart.set_3d_xyz(self.main.ser, x, y, z)
 
     def get_serial_ports(self):
         ports = serial.tools.list_ports.comports()

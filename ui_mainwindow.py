@@ -23,6 +23,7 @@ class MainWindow(QWidget):
 
         self.x_pos = 0
         self.y_pos = 0
+        self.z_pos = 0
 
         # -------------------- LABELS -----------------------
 
@@ -304,7 +305,7 @@ class MainWindow(QWidget):
         self.update_rate_btn.clicked.connect(self.bf.set_update_rate)
         self.node_label_accept.clicked.connect(self.bf.set_node_label)
         self.xy_2d_btn.clicked.connect(self.bf.set_2d_xy)
-        # Create xyz_3d_btn function
+        self.xyz_3d_btn.clicked.connect(self.bf.set_3d_xyz)
         self.get_serial_ports_btn.clicked.connect(self.bf.get_serial_ports)
         self.reboot_btn.clicked.connect(self.bf.reboot_module)
         self.anchors_list_btn.clicked.connect(self.bf.show_anchors_list)
@@ -314,3 +315,5 @@ class MainWindow(QWidget):
         self.stop_meas_btn.clicked.connect(self.bf.stop_measure)
         self._2d_pos_btn_start.clicked.connect(self.bf.start_measure_2d)
         self._2d_pos_btn_stop.clicked.connect(self.bf.stop_measure)
+        self._3d_pos_btn_start.clicked.connect(self.bf.start_measure_3d)
+        self._3d_pos_btn_stop.clicked.connect(self.bf.stop_measure)
