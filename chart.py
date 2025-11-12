@@ -1,8 +1,11 @@
 from PyQt6.QtGui import QPainter
 from PyQt6.QtWidgets import QApplication, QGraphicsView, QGraphicsScene, QGraphicsEllipseItem, QGraphicsLineItem
 from PyQt6.QtCore import Qt
+import pyqtgraph as pg
+import pyqtgraph.opengl as gl
+import numpy as np
 
-class CoordinateSystem(QGraphicsView):
+class CoordinateSystem2d(QGraphicsView):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("coordinates X Y")
@@ -25,4 +28,25 @@ class CoordinateSystem(QGraphicsView):
     def set_point(self, x, y):
         scale = 250
         self.point.setPos(x * scale, y * scale)
+
+
+class CoordinateSystem3d(gl.GLViewWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("3D Coordinate System")
+        self.setCameraPosition(distance=4)
+
+        axes = gl.GLAxisItem()
+        axes.setSize(2, 2, 2)
+        self.addItem(axes)
+
+        self.point = gl.GLScatterPlotItem(
+            pos=np.array([[0, 0, 0]]),
+            color=(1, 0, 0, 1),
+            size=10
+        )
+        self.addItem(self.point)
+
+    def set_point(self, x, y, z):
+        self.point.setData(pos=np.array([[x, y, z]]))
 

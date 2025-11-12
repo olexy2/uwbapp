@@ -31,6 +31,10 @@ class MainWindow(QWidget):
         self._2d_pos_label = QLabel('2D positioning')
         self.x_2d_label = QLabel('set anchor X coordinate [mm]')
         self.y_2d_label = QLabel('set anchor Y coordinate [mm]')
+        self._3d_pos_label = QLabel('3D positioning')
+        self.x_3d_label =QLabel('set anchor X coordinate [mm]')
+        self.y_3d_label = QLabel('set anchor Y coordinate [mm]')
+        self.z_3d_label = QLabel('set anchor Z coordinate [mm]')
         self.serial_port_name_label = QLabel('Serial port name')
         self.baudrate_label = QLabel('Baudrate')
         self.mode_label = QLabel('Mode')
@@ -53,9 +57,13 @@ class MainWindow(QWidget):
 
         #COLUMN 1
         self.distance_line = QLineEdit()
+        self._2d_pos_line = QLineEdit()
         self.x_2d_line = QLineEdit()
         self.y_2d_line = QLineEdit()
-        self._2d_pos_line = QLineEdit()
+        self._3d_pos_line = QLineEdit()
+        self.x_3d_line = QLineEdit()
+        self.y_3d_line = QLineEdit()
+        self.z_3d_line = QLineEdit()
 
         self.distance_line.setReadOnly(True)
         self._2d_pos_line.setReadOnly(True)
@@ -68,7 +76,8 @@ class MainWindow(QWidget):
         self.set_panid_btn = QPushButton('accept')  # ACCEPT 2
         self.update_rate_btn = QPushButton('accept')  # ACCEPT 3
         self.node_label_accept = QPushButton('accept')  # ACCEPT 4
-        self.y_2d_btn = QPushButton('accept X and Y')  # ACCEPT 5
+        self.xy_2d_btn = QPushButton('accept X and Y')  # ACCEPT 5
+        self.xyz_3d_btn = QPushButton('accept X, Y, Z') #ACCEPT 6
         self.get_serial_ports_btn = QPushButton('get serial ports')
         self.reboot_btn = QPushButton('reboot the module')
         self.anchors_list_btn = QPushButton('show anchors in network')
@@ -79,6 +88,8 @@ class MainWindow(QWidget):
         self.stop_meas_btn = QPushButton('stop distance measuring')
         self._2d_pos_btn_start = QPushButton('start 2D positioning')
         self._2d_pos_btn_stop = QPushButton('stop 2D positioning')
+        self._3d_pos_btn_start = QPushButton('start 3D positioning')
+        self._3d_pos_btn_stop = QPushButton('stop 3D positioning')
 
         # -------------------- TIMER --------------------------
         self.timer = QTimer()
@@ -140,16 +151,19 @@ class MainWindow(QWidget):
         right_layout1 = QGridLayout()
         right_layout1.setContentsMargins(0, 0, 0, 0)
 
-        right_layout1.addWidget(self.measurements_label, 0, 0)
-        right_layout1.addWidget(self.distance_line, 1, 0)
-        right_layout1.addWidget(self.measure_btn, 2, 0)
-        right_layout1.addWidget(self.stop_meas_btn, 3, 0)
 
         layout.addLayout(right_layout, 0, 1)
         right_layout.addLayout(right_layout1, 1, 0, alignement_top)
 
         right_layout2 = QGridLayout()
-        right_layout2.setContentsMargins(0, 0, 0, 0)
+        #right_layout2.setContentsMargins(0, 0, 0, 0)
+
+
+        right_layout2.addWidget(self.measurements_label, 0, 0, 1, 3)
+        right_layout2.addWidget(self.distance_line, 1, 0, 1, 3)
+        right_layout2.addWidget(self.measure_btn, 2, 0, 1, 3)
+        right_layout2.addWidget(self.stop_meas_btn, 3, 0, 1, 3)
+
         right_layout2.addWidget(self._2d_pos_label, 4, 0, 1, 3)
         right_layout2.addWidget(self._2d_pos_line, 5, 0, 1, 3)
         right_layout2.addWidget(self._2d_pos_btn_start, 6, 0, 1, 3)
@@ -158,7 +172,18 @@ class MainWindow(QWidget):
         right_layout2.addWidget(self.y_2d_label, 9, 0, 1, 1)
         right_layout2.addWidget(self.x_2d_line, 8, 1, 1, 1)
         right_layout2.addWidget(self.y_2d_line, 9, 1, 1, 1)
-        right_layout2.addWidget(self.y_2d_btn, 9, 2, 1, 1)
+        right_layout2.addWidget(self.xy_2d_btn, 9, 2, 1, 1)
+        right_layout2.addWidget(self._3d_pos_label, 10, 0, 1, 3)
+        right_layout2.addWidget(self._3d_pos_line, 11, 0, 1, 3)
+        right_layout2.addWidget(self._3d_pos_btn_start, 12, 0, 1, 3)
+        right_layout2.addWidget(self._3d_pos_btn_stop, 13, 0, 1, 3)
+        right_layout2.addWidget(self.x_3d_label, 14, 0, 1, 1)
+        right_layout2.addWidget(self.y_3d_label, 15, 0, 1, 1)
+        right_layout2.addWidget(self.z_3d_label, 16, 0, 1, 1)
+        right_layout2.addWidget(self.x_3d_line, 14, 1, 1, 1)
+        right_layout2.addWidget(self.y_3d_line, 15, 1, 1, 1)
+        right_layout2.addWidget(self.z_3d_line, 16, 1, 1, 1)
+        right_layout2.addWidget(self.xyz_3d_btn, 16, 2, 1, 1)
 
         right_layout.addLayout(right_layout2, 2, 0, alignement_top)
 
@@ -182,6 +207,7 @@ class MainWindow(QWidget):
         #COLUMN 1
         self.distance_line.setPlaceholderText('distance [m]')
         self._2d_pos_line.setPlaceholderText('[X, Y]')
+        self._3d_pos_line.setPlaceholderText('[X, Y, Z]')
 
         self.info_line.setEnabled(False)
         self.terminal_textbox.setEnabled(False)
@@ -198,10 +224,12 @@ class MainWindow(QWidget):
         self.config_label.setFont(big_font)
         self.measurements_label.setFont(big_font)
         self._2d_pos_label.setFont(big_font)
+        self._3d_pos_label.setFont(big_font)
 
         self.config_label.setStyleSheet('color: blue')
         self.measurements_label.setStyleSheet('color: orange')
-        self._2d_pos_label.setStyleSheet('color: green')
+        self._2d_pos_label.setStyleSheet('color: magenta')
+        self._3d_pos_label.setStyleSheet('color: green')
 
         white_small_font_widgets = [
             self.measure_btn,
@@ -220,6 +248,15 @@ class MainWindow(QWidget):
             self.y_2d_label,
             self.x_2d_line,
             self.y_2d_line,
+            self._3d_pos_line,
+            self._3d_pos_btn_start,
+            self._3d_pos_btn_stop,
+            self.x_3d_line,
+            self.y_3d_line,
+            self.z_3d_line,
+            self.x_3d_label,
+            self.y_3d_label,
+            self.z_3d_label,
             self.serial_port_name_label,
             self.serial_port_name_line,
             self.baudrate_label,
@@ -250,7 +287,8 @@ class MainWindow(QWidget):
             self.set_panid_btn,
             self.update_rate_btn,
             self.node_label_accept,
-            self.y_2d_btn,
+            self.xy_2d_btn,
+            self.xyz_3d_btn,
         ]
 
         for widget in white_tiny_font_widgets:
@@ -265,7 +303,8 @@ class MainWindow(QWidget):
         self.set_panid_btn.clicked.connect(self.bf.set_panid)
         self.update_rate_btn.clicked.connect(self.bf.set_update_rate)
         self.node_label_accept.clicked.connect(self.bf.set_node_label)
-        self.y_2d_btn.clicked.connect(self.bf.set_2d_xy)
+        self.xy_2d_btn.clicked.connect(self.bf.set_2d_xy)
+        # Create xyz_3d_btn function
         self.get_serial_ports_btn.clicked.connect(self.bf.get_serial_ports)
         self.reboot_btn.clicked.connect(self.bf.reboot_module)
         self.anchors_list_btn.clicked.connect(self.bf.show_anchors_list)
