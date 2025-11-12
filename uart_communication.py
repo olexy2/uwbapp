@@ -20,6 +20,7 @@ def access_uart(ser):
 def an_mode(ser):
     ser.write(b'nma\r')
     time.sleep(0.9)
+
 def tag_moge(ser):
     ser.write(b'nmt\r')
     time.sleep(0.9)

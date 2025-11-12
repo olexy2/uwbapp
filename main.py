@@ -12,11 +12,11 @@ if __name__ == "__main__":
     chart_window_2d= CoordinateSystem2d()
     chart_window_3d = CoordinateSystem3d()
 
-    main_window.position_changed.connect(chart_window_2d.set_point)
+    main_window.position_changed_2d.connect(chart_window_2d.set_point)
 
     main_window.show()
+    chart_window_2d.show()
     chart_window_3d.show()
-    #chart_window_2d.show()
 
     sys.exit(app.exec())
 

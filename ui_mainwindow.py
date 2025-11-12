@@ -8,7 +8,8 @@ from main_functions import Buttons_func
 
 class MainWindow(QWidget):
 
-    position_changed = pyqtSignal(float, float)
+    position_changed_2d = pyqtSignal(float, float)
+    position_changed_3d = pyqtSignal(float, float, float)
 
     def __init__(self):
         super().__init__()
